@@ -1,3 +1,5 @@
+// requiring files
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -5,6 +7,12 @@ const ejs = require("ejs");
 const listing = require("./models/listing.js");
 const path = require("path");
 
+
+
+// set and use  functions
+app.set("view engine","ejs");
+app.set("views",path.join(__dirname,"views"));
+app.use(express.urlencoded({extended:true}));
 
 // data base connection
 
@@ -21,11 +29,17 @@ main().then(()=>{
 });
 
 
+
+
 //server setup
 app.listen(8080,()=>{
-
     console.log("Use port 8080");
 })
+
+
+
+
+
 
 
 // creating Routs
@@ -37,8 +51,16 @@ app.get("/",(req,res)=>{
 
 app.get("/listings",async (req,res)=>{
     const allListing = await listing.find({});
-    app.render("index.ejs",{allListing});
+    res.render("listings/index.ejs",{allListing});
 
+})
+
+// show routs
+
+app.get("/listings/:id",async(req,res)=>{
+    let id = req.params;
+    let data =  await listing.findById(id);
+    res.render("listings/show.ejs",data);
 })
 
 // app.get("/testListing",async (req,res)=>{
