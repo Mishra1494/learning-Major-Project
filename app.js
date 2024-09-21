@@ -39,7 +39,7 @@ app.get("/testListing",async (req,res)=>{
     let sample = new listing({
             title:"Raunak Home",
             Descriprtion :"at the center of city",
-            price:1200,
+            Price:1200,
             location:"Pune",
             country:"India"
         })
