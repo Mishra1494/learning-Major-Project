@@ -22,7 +22,7 @@ main().then(()=>{
 
 
 //server setup
-app.listen(8808,()=>{
+app.listen(8080,()=>{
 
     console.log("Use port 8080");
 })
@@ -35,18 +35,18 @@ app.get("/",(req,res)=>{
     res.send("The project started");
 })
 
-app.get("/testListing",async (res,req)=>{
-    let sample = new listing(
-        {
+app.get("/testListing",async (req,res)=>{
+    let sample = new listing({
             title:"Raunak Home",
             Descriprtion :"at the center of city",
             price:1200,
             location:"Pune",
             country:"India"
         })
-        await  sample.save(),
-        console.log("Saved file"),
-        res.send("Done the connection")
+        await  sample.save();
+        console.log(sample);
+        console.log("Saved file");
+        res.send("Done the connection");
 
     }
 )
