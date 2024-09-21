@@ -35,18 +35,25 @@ app.get("/",(req,res)=>{
     res.send("The project started");
 })
 
-app.get("/testListing",async (req,res)=>{
-    let sample = new listing({
-            title:"Raunak Home",
-            Descriprtion :"at the center of city",
-            Price:1200,
-            location:"Pune",
-            country:"India"
-        })
-        await  sample.save();
-        console.log(sample);
-        console.log("Saved file");
-        res.send("Done the connection");
+app.get("/listings",async (req,res)=>{
+    let allListing = await listing.find({});
+    app.render("index.ejs",{allListing});
+})
 
-    }
-)
+// app.get("/testListing",async (req,res)=>{
+//     let sample = new listing({
+//             title:"Raunak Home",
+//             Descriprtion :"at the center of city",
+//             Price:1200,
+//             location:"Pune",
+//             country:"India"
+//         })
+//         await  sample.save();
+//         console.log(sample);
+//         console.log("Saved file");
+//         res.send("Done the connection");
+
+//     }
+// )
+
+
