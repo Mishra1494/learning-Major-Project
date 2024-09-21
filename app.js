@@ -3,7 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 const listing = require("./models/listing.js");
-
+const path = require("path");
 
 
 // data base connection
@@ -36,8 +36,9 @@ app.get("/",(req,res)=>{
 })
 
 app.get("/listings",async (req,res)=>{
-    let allListing = await listing.find({});
+    const allListing = await listing.find({});
     app.render("index.ejs",{allListing});
+
 })
 
 // app.get("/testListing",async (req,res)=>{
