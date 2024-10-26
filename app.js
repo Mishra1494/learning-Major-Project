@@ -2,7 +2,7 @@
 
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
+const {mongoose} = require("mongoose").Types;
 const ejs = require("ejs");
 const listing = require("./models/listing.js");
 const path = require("path");
@@ -20,27 +20,16 @@ async function main(){
     await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
 }
 
-
-
 main().then(()=>{
     console.log("Connected Succesfully");
 }).catch(()=>{
     console.log("Some err occured");
 });
 
-
-
-
 //server setup
 app.listen(8080,()=>{
     console.log("Use port 8080");
 })
-
-
-
-
-
-
 
 // creating Routs
 
@@ -58,8 +47,8 @@ app.get("/listings",async (req,res)=>{
 // show routs
 
 app.get("/listings/:id",async(req,res)=>{
-    let id = req.params;
-    let data =  await listing.findById(id);
+    let id = req.params.id;
+    let data =  await listing.findById(mongoose(id));
     res.render("listings/show.ejs",data);
 })
 
