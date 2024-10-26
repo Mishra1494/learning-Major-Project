@@ -9,8 +9,9 @@
     <h1>Listing Detail</h1>
     <h2><%= data.title %></h2>
     <p><%= data.description %></p>
-    <img src="<%= data.image %>">
-    <p><%= data.price %></p>
-    <p><%=data.country data.location%></p>
+    <!-- <img src="<%= data.image %>"> -->
+    <p>Price:&#8377;<%= data.price.toLocaleString("en-IN")%></p>
+    <p>Location:<%=data.location %>,<%=data.country%></p>
+    
 </body>
 </html>

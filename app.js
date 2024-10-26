@@ -2,7 +2,7 @@
 
 const express = require("express");
 const app = express();
-const {mongoose} = require("mongoose").Types;
+const mongoose = require("mongoose");
 const ejs = require("ejs");
 const listing = require("./models/listing.js");
 const path = require("path");
@@ -38,18 +38,34 @@ app.get("/",(req,res)=>{
     res.send("The project started");
 })
 
+//index.js
+
 app.get("/listings",async (req,res)=>{
     const allListing = await listing.find({});
     res.render("listings/index.ejs",{allListing});
 
 })
 
+
+//new route
+
+app.get("/listings/new",(req,res)=>{
+        res.render("listings/new.ejs");
+})
+
 // show routs
 
 app.get("/listings/:id",async(req,res)=>{
-    let id = req.params.id;
-    let data =  await listing.findById(mongoose(id));
-    res.render("listings/show.ejs",data);
+    let {id}= req.params;
+    let data =  await listing.findById(id);
+    res.render("listings/show.ejs",{data});
+})
+
+
+//creat route
+
+app.post("/listing/create",async(req,res)=>{
+    res.send("done");
 })
 
 // app.get("/testListing",async (req,res)=>{
