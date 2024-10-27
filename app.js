@@ -64,12 +64,12 @@ app.get("/listings/:id",async(req,res)=>{
 
 //creat route
 
-app.post("/listings/create",async(req,res)=>{
+app.post("/listings",async(req,res)=>{
     console.log(req.body);
     const newlisting = new listing(req.body);
 
     await newlisting.save();
-    res.redirect("listings/index.ejs");
+    res.redirect("/index.ejs");
 })
 
 // app.get("/testListing",async (req,res)=>{
