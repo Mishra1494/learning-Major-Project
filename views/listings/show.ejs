@@ -12,6 +12,9 @@
     <!-- <img src="<%= data.image %>"> -->
     <p>Price:&#8377;<%= data.price.toLocaleString("en-IN")%></p>
     <p>Location:<%=data.location %>,<%=data.country%></p>
-    
+    <a href="/listings/<%=data._id%>/Edit">Edit this Route</a>
+    <form method="post" action="/listings/<%=data._id%>/Delete?_method=PATCH">
+        <button>Delete Thid Route</button>
+    </form>
 </body>
 </html>
