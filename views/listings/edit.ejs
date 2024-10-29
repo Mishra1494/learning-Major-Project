@@ -1,30 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add listing</title>
-</head>
+<% layout("/layouts/boilerplates") %>
 <body>
+    <div class="row">
+     <div class="col-8 offset-2">
     <form method="post" action="/listings/<%=data._id%>?_method=PUT"  >
-        <input name="listings[title]" value="<%=data.title%>" type="text">
-        <br>
-        <br>
-        <textarea name="listings[description]" value="<%=data.description %>" type="text"><%=data.description %></textarea>
-        <br>
-        <br>
-        <input name="listings[image]"  value="<%=data.image%>" type="text">
-        <br>
-        <br>
-        <input name="listings[price]"  value="<%=data.price %>" type="number">
-        <br>
-        <br>
-        <input name="listings[location]"  value="<%=data.location %>" type="text">
-        <br>
-        <br>
-        <input name="listings[country]"  value="<%=data.country %>" type="text">
-        <br>
-        <button>add</button>
+        <div class="mb-3">
+            <lable for="title" class="form-label">Title</lable>
+            <input name="listings[title]" placeholder="<%= data.title %>" type="text" class="form-control">
+            </div>
+            
+            <div class="mb-3">
+                <lable for="description" class="form-label">Description</lable>
+                <textarea name="listings[description]" placeholder="<%= data.description%>" type="text" class="form-control"></textarea>
+            </div>
+            <div class="mb-3">
+                <lable for="image" class="form-label"> Image Url</lable>
+                <input name="listings[image]" placeholder="<%= data.image%>" type="text" class="form-control">
+            </div>
+            <div class="mb-3">
+                <lable for="price" class="form-label"> Price </lable>
+                <input name="listings[price]" placeholder="<%= data.price %>" type="number" class="form-control">
+            </div>
+            
+            <div class="mb-3">
+                <lable for="location" class="form-label"> location</lable>
+                <input name="listings[location]" placeholder="<%= data.location %>" type="text" class="form-control">
+            </div>
+            
+            <div class="mb-3">
+                <lable for="country" class="form-label">country</lable>
+                <input name="listings[country]" placeholder="<%= data.country %>" type="text" class="form-control">
+            </div>
+           
+            <button class="btn btn-dark add-btn">Update</button>
     </form>
+    </div>
+    </div>
 </body>
-</html>

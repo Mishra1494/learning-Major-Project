@@ -1,20 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>See the Property</title>
-</head>
+<% layout("/layouts/boilerplates") %>
 <body>
-    <h1>Listing Detail</h1>
-    <h2><%= data.title %></h2>
-    <p><%= data.description %></p>
-    <!-- <img src="<%= data.image %>"> -->
-    <p>Price:&#8377;<%= data.price.toLocaleString("en-IN")%></p>
-    <p>Location:<%=data.location %>,<%=data.country%></p>
-    <a href="/listings/<%=data._id%>/Edit">Edit this Route</a>
-    <form method="post" action="/listings/<%=data._id%>/Delete?_method=PATCH">
-        <button>Delete Thid Route</button>
-    </form>
+    <div class="row">
+        <div class="col-8 offset-2">
+        <h1>Listing Detail</h1>
+        </div>
+    <div class="card col-6 offset-2" >
+        <img src="<%= data.image %>" class="card-img-top show-img add-btn" alt="Card-image">
+        <div class="card-body">
+          <h5 class="card-title"></h5>
+          <p class="card-text">
+            <b><%= data.title %></b><br>
+            <%= data.description %><br>
+         
+            Price:&#8377;<%= data.price.toLocaleString("en-IN")%><br>
+         
+            Location:<%=data.location %>,<%=data.country%><br>
+            <a href="/listings/<%=data._id%>/Edit" class="btn btn-dark">Update</a><br>
+            <form method="post" action="/listings/<%=data._id%>/Delete?_method=PATCH">
+              <button>Delete</button>
+          </form>
+         
+        </p>
+          
+         
+
+        </div>
+      </div>
+   
+</div>
 </body>
-</html>
