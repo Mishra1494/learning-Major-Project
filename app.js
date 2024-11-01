@@ -7,9 +7,11 @@ const listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const asyncWrap = require("..utils/wrapAsync.js");
-
-
+const asyncWrap = require("./utils/wrapAsync.js");
+const wrapAsync = require("./utils/wrapAsync.js");
+const expressError = require("./utils/expressError.js");
+// const Joi = require('joi'); // for schema validation
+const {listingSchema} = require("./schema.js");
 
 // set and use  functions
 app.set("view engine","ejs");
@@ -46,68 +48,75 @@ app.get("/",(req,res)=>{
     res.send("The project started");
 })
 
-
+const validateListing = (req,res,next)=>{
+    let result = listingSchema.validate(req.body);
+    console.log(result);
+    if(result.error){
+        throw new expressError(400,result.error);
+    }else{
+        next();
+    }
+}
 
 
 //index.js
-app.get("/listings",async (req,res,next)=>{
-    try{
+app.get("/listings",asyncWrap(async (req,res,next)=>{
+
         const allListing = await listing.find({});
         res.render("listings/index.ejs",{allListing});
-    }catch(err){
-        next(err);
-    }
-})
+    
+}))
 
 
 //new route
 app.get("/listings/new",(req,res)=>{
+
         res.render("listings/new.ejs");
 })
 
 
 
 // show routs
-app.get("/listings/:id",async(req,res,next)=>{
+app.get("/listings/:id",asyncWrap(async(req,res,next)=>{
+
     let {id}= req.params;
     let data =  await listing.findById(id);
     res.render("listings/show.ejs",{data});
-})
+}))
 
 
 
 //creat route
-app.post("/listings",async(req,res,next)=>{
-    try{
-        const newlisting = new listing(req.body.listings);
-        await newlisting.save();
-        res.redirect("/listings");
-    }catch(err){
-        next(err);
-    }
-})
+// schema validation is done by joi
+app.post("/listings",validateListing,asyncWrap(async(req,res,next)=>{
+
+    const newlisting = new listing(req.body.listings);
+    await newlisting.save();
+    res.redirect("/listings");
+}))
 
 
 // update route
-app.get("/listings/:id/Edit",async(req,res)=>{
+app.get("/listings/:id/Edit",asyncWrap(async(req,res)=>{
     let {id} = req.params;
     const data = await listing.findById(id);
     res.render("listings/edit.ejs",{data});
-})
-app.put("/listings/:id",async(req,res)=>{
+}))
+app.put("/listings/:id",validateListing,asyncWrap(async(req,res)=>{
     let {id} = req.params;
+
     await listing.findByIdAndUpdate(id,{...req.body.listings});
     res.redirect(`/listings/${id}`);
-})
+}))
 
 
 
 // Delete Route
-app.patch("/listings/:id/Delete",async(req,res)=>{
+app.patch("/listings/:id/Delete",asyncWrap(async(req,res)=>{
     let {id} = req.params;
     await listing.findByIdAndDelete(id);
     res.redirect("/listings");
-})
+}))
 
 
 
@@ -129,7 +138,12 @@ app.patch("/listings/:id/Delete",async(req,res)=>{
 //     }
 // )
 
+app.all("*",(req,res,next)=>{
+    next(new expressError(404," page  not found"));
+})
 
 app.use((err,req,res,next)=>{
-    res.send("Some thing went wrong");
+    let {status=500,message="something Went wrong"} = err;
+    res.render("error.ejs",{message});
+    // res.status(status).send(message);
 })
