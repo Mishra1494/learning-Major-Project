@@ -7,6 +7,7 @@ const listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
+const asyncWrap = require("..utils/wrapAsync.js");
 
 
 
@@ -49,10 +50,13 @@ app.get("/",(req,res)=>{
 
 
 //index.js
-app.get("/listings",async (req,res)=>{
-    const allListing = await listing.find({});
-    res.render("listings/index.ejs",{allListing});
-
+app.get("/listings",async (req,res,next)=>{
+    try{
+        const allListing = await listing.find({});
+        res.render("listings/index.ejs",{allListing});
+    }catch(err){
+        next(err);
+    }
 })
 
 
@@ -64,7 +68,7 @@ app.get("/listings/new",(req,res)=>{
 
 
 // show routs
-app.get("/listings/:id",async(req,res)=>{
+app.get("/listings/:id",async(req,res,next)=>{
     let {id}= req.params;
     let data =  await listing.findById(id);
     res.render("listings/show.ejs",{data});
@@ -73,10 +77,14 @@ app.get("/listings/:id",async(req,res)=>{
 
 
 //creat route
-app.post("/listings",async(req,res)=>{
-    const newlisting = new listing(req.body.listings);
-    await newlisting.save();
-    res.redirect("/listings");
+app.post("/listings",async(req,res,next)=>{
+    try{
+        const newlisting = new listing(req.body.listings);
+        await newlisting.save();
+        res.redirect("/listings");
+    }catch(err){
+        next(err);
+    }
 })
 
 
@@ -120,3 +128,8 @@ app.patch("/listings/:id/Delete",async(req,res)=>{
 
 //     }
 // )
+
+
+app.use((err,req,res,next)=>{
+    res.send("Some thing went wrong");
+})

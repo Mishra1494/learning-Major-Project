@@ -4,33 +4,76 @@
         <div class="col-8 offset-2">
             <h1>Create new Listing</h1>
             <br>
-            <form method="post" action="/listings">
+            <form method="post" action="/listings" novalidate class="needs-validation">
                 <div class="mb-3">
-                <lable for="title" class="form-label">Title</lable>
-                <input name="listings[title]" placeholder="Enter the title" type="text" class="form-control">
+                <lable for="validationCustom01" class="form-label">Title</lable>
+                <input 
+                    name="listings[title]" 
+                    placeholder="Enter the title" 
+                    type="text" 
+                    class="form-control"
+                    required
+                />
+                <div class="valid-feedback">
+                    Title looks good!
+                </div>
                 </div>
                 
                 <div class="mb-3">
                     <lable for="description" class="form-label">Description</lable>
-                    <textarea name="listings[description]" placeholder="Enter the description" type="text" class="form-control"></textarea>
+                    <textarea 
+                        name="listings[description]" 
+                        placeholder="Enter the description" 
+                        type="text" class="form-control"
+                        required>
+                    </textarea>
                 </div>
                 <div class="mb-3">
                     <lable for="image" class="form-label"> Image Url</lable>
-                    <input name="listings[image]" placeholder="Enter the image url/Link" type="text" class="form-control">
+                    <input 
+                        name="listings[image]" 
+                        placeholder="Enter the image url/Link" 
+                        type="text" 
+                        class="form-control"
+                        >
                 </div>
                 <div class="mb-3">
                     <lable for="price" class="form-label"> Price </lable>
-                    <input name="listings[price]" placeholder="Enter the price" type="number" class="form-control">
+                    <input 
+                        name="listings[price]" 
+                        placeholder="Enter the price" 
+                         
+                        class="form-control"
+                        required>
+                        <div class="invalid-feedback">
+                            Enter the valid price
+                        </div>
                 </div>
                 
                 <div class="mb-3">
                     <lable for="location" class="form-label"> location</lable>
-                    <input name="listings[location]" placeholder="Enter the location" type="text" class="form-control">
+                    <input 
+                        name="listings[location]" 
+                        placeholder="Enter the location" 
+                        type="text" 
+                        class="form-control"
+                        required>
+                        <div class="invalid-feedback">
+                            Enter the valid location
+                        </div>
                 </div>
                 
                 <div class="mb-3">
                     <lable for="country" class="form-label">country</lable>
-                    <input name="listings[country]" placeholder="Enter the country" type="text" class="form-control">
+                    <input 
+                        name="listings[country]" 
+                        placeholder="Enter the country" 
+                        type="text" 
+                        class="form-control"
+                        required>
+                        <div class="invalid-feedback">
+                            Enter the valid country
+                        </div>
                 </div>
                
                 <button class="btn btn-dark add-btn">add</button>

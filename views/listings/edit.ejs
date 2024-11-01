@@ -2,33 +2,53 @@
 <body>
     <div class="row">
      <div class="col-8 offset-2">
-    <form method="post" action="/listings/<%=data._id%>?_method=PUT"  >
+    <form method="post" action="/listings/<%=data._id%>?_method=PUT" novalidate class="needs-validation" >
         <div class="mb-3">
             <lable for="title" class="form-label">Title</lable>
-            <input name="listings[title]" placeholder="<%= data.title %>" type="text" class="form-control">
+            <input name="listings[title]" value="<%= data.title %>" type="text" class="form-control" required>
+            <div class="invalid-feedback">
+                Title is required
+            </div>
             </div>
             
             <div class="mb-3">
                 <lable for="description" class="form-label">Description</lable>
                 <textarea name="listings[description]" placeholder="<%= data.description%>" type="text" class="form-control"></textarea>
+                <div class="invalid-feedback">
+                    Enter the description
+                </div>
             </div>
             <div class="mb-3">
                 <lable for="image" class="form-label"> Image Url</lable>
-                <input name="listings[image]" placeholder="<%= data.image%>" type="text" class="form-control">
+                <input 
+                    name="listings[image]" 
+                    value="<%= data.image%>" 
+                    type="text" 
+                    class="form-control"
+                    required>
             </div>
             <div class="mb-3">
                 <lable for="price" class="form-label"> Price </lable>
-                <input name="listings[price]" placeholder="<%= data.price %>" type="number" class="form-control">
+                <input name="listings[price]" value="<%= data.price %>" type="number" class="form-control" required>
+                <div class="invalid-feedback">
+                    Enter the valid price
+                </div>
             </div>
             
             <div class="mb-3">
                 <lable for="location" class="form-label"> location</lable>
-                <input name="listings[location]" placeholder="<%= data.location %>" type="text" class="form-control">
+                <input name="listings[location]" value="<%= data.location %>" type="text" class="form-control" required>
+                <div class="invalid-feedback">
+                    Enter the valid location
+                </div>
             </div>
             
             <div class="mb-3">
                 <lable for="country" class="form-label">country</lable>
-                <input name="listings[country]" placeholder="<%= data.country %>" type="text" class="form-control">
+                <input name="listings[country]" value="<%= data.country %>" type="text" class="form-control" required>
+                <div class="invalid-feedback">
+                    Enter  country name 
+                </div>
             </div>
            
             <button class="btn btn-dark add-btn">Update</button>
