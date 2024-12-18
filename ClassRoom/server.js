@@ -2,16 +2,33 @@ const express = require("express");
 const app = express();
 const user = require("./routes/user.js");
 const post = require("./routes/post.js");
+const path = require("path");
+
 const cookieParser = require("cookie-parser");
+const flash = require("connect-flash");//npm packege to store the temporry after the data bieng displayed it deleted in the connect flash
 const session = require("express-session");
-app.listen(3000,()=>{
+const sessionOptions = session({secret: 'keyboard cat',resave:false,saveUninitialized:true});
+app.listen(8080,()=>{
     console.log("hello from express routing ");
 })
+app.set("view engine","ejs");
+app.set("views",path.join(__dirname,"views"));
 
 
 
 app.set('trust proxy', 1) // trust first proxy
-app.use(session({secret: 'keyboard cat'}))
+app.use(sessionOptions);
+app.use(flash);
+app.get("/register",(req,res)=>{
+    let {name="Anonymous"} = req.query;
+    req.session.name = name;
+    console.log(req.session);
+    req.flash("succes","user registerd succesfully");
+    res.redirect("/hello");
+})
+app.get("/hello",(req,res)=>{
+    res.render("flashMsg.ejs",{name : req.session.name});
+})
 
 
 app.get("/test",(req,res)=>{
@@ -55,4 +72,12 @@ app.get("/test",(req,res)=>{
 // })
 
 
-
+// this will count how much time the user is accesing the web in same session if count is exist incerease it otherswise set it to 1
+app.get("/requestCount",(req,res)=>{
+    if(req.session.count){
+        req.session.count++;
+    }else{
+        req.session.count = 1; 
+    }
+    res.send(`You sent the requesr ${req.session.count} times`);
+})
