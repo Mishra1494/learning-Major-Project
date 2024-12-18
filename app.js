@@ -7,11 +7,12 @@ const listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const asyncWrap = require("./utils/wrapAsync.js");
 const wrapAsync = require("./utils/wrapAsync.js");
+const asyncWrap = require("./utils/wrapAsync.js");
 const expressError = require("./utils/expressError.js");
 // const Joi = require('joi'); // for schema validation
 const {listingSchema} = require("./schema.js");
+const listings = require("./routes/listing.js");
 
 // set and use  functions
 app.set("view engine","ejs");
@@ -20,7 +21,6 @@ app.use(express.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
-
 
 // data base connection
 async function main(){
@@ -33,14 +33,10 @@ main().then(()=>{
     console.log("Some err occured");
 });
 
-
-
 //server setup
 app.listen(8080,()=>{
     console.log("Use port 8080");
 })
-
-
 
 // creating Routs
 app.get("/",(req,res)=>{
@@ -48,79 +44,8 @@ app.get("/",(req,res)=>{
     res.send("The project started");
 })
 
-const validateListing = (req,res,next)=>{
-    let result = listingSchema.validate(req.body);
-    console.log(result);
-    if(result.error){
-        throw new expressError(400,result.error);
-    }else{
-        next();
-    }
-}
 
-
-//index.js
-app.get("/listings",asyncWrap(async (req,res,next)=>{
-
-        const allListing = await listing.find({});
-        res.render("listings/index.ejs",{allListing});
-    
-}))
-
-
-//new route
-app.get("/listings/new",(req,res)=>{
-
-        res.render("listings/new.ejs");
-})
-
-
-
-// show routs
-app.get("/listings/:id",asyncWrap(async(req,res,next)=>{
-
-    let {id}= req.params;
-    let data =  await listing.findById(id);
-    res.render("listings/show.ejs",{data});
-}))
-
-
-
-//creat route
-// schema validation is done by joi
-app.post("/listings",validateListing,asyncWrap(async(req,res,next)=>{
-
-    const newlisting = new listing(req.body.listings);
-    await newlisting.save();
-    res.redirect("/listings");
-}))
-
-
-// update route
-app.get("/listings/:id/Edit",asyncWrap(async(req,res)=>{
-    let {id} = req.params;
-    const data = await listing.findById(id);
-    res.render("listings/edit.ejs",{data});
-}))
-app.put("/listings/:id",validateListing,asyncWrap(async(req,res)=>{
-    let {id} = req.params;
-
-    await listing.findByIdAndUpdate(id,{...req.body.listings});
-    res.redirect(`/listings/${id}`);
-}))
-
-
-
-// Delete Route
-app.patch("/listings/:id/Delete",asyncWrap(async(req,res)=>{
-    let {id} = req.params;
-    await listing.findByIdAndDelete(id);
-    res.redirect("/listings");
-}))
-
-
-
-
+app.use("/listings",listings);
 
 // app.get("/testListing",async (req,res)=>{
 //     let sample = new listing({
