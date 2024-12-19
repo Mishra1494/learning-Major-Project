@@ -18,6 +18,7 @@ const validateListing = (req,res,next)=>{
 //index.js
 router.get("/",asyncWrap(async (req,res,next)=>{
         const allListing = await listing.find({});
+       
         res.render("listings/index.ejs",{allListing});
     })
 );
@@ -45,6 +46,7 @@ router.post("/",validateListing,asyncWrap(async(req,res,next)=>{
 
     const newlisting = new listing(req.body.listings);
     await newlisting.save();
+    req.flash("success","new listing created!");
     res.redirect("/listings");
 }))
 
@@ -59,8 +61,9 @@ router.get("/:id/Edit",asyncWrap(async(req,res)=>{
 
 router.put("/:id",validateListing,asyncWrap(async(req,res)=>{
     let {id} = req.params;
-
+    
     await listing.findByIdAndUpdate(id,{...req.body.listings});
+    req.flash("success","listing updated!");
     res.redirect(`/listings/${id}`);
 }))
 
@@ -70,6 +73,7 @@ router.put("/:id",validateListing,asyncWrap(async(req,res)=>{
 router.patch("/:id/Delete",asyncWrap(async(req,res)=>{
     let {id} = req.params;
     await listing.findByIdAndDelete(id);
+    req.flash("success","listing deleted!");
     res.redirect("/listings");
 }))
 

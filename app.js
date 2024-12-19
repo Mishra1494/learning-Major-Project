@@ -13,6 +13,8 @@ const expressError = require("./utils/expressError.js");
 // const Joi = require('joi'); // for schema validation
 const {listingSchema} = require("./schema.js");
 const listings = require("./routes/listing.js");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 // set and use  functions
 app.set("view engine","ejs");
@@ -21,6 +23,23 @@ app.use(express.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
+const sessionOptions = {
+    secret:"my secret key",
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+        expires : Date.now()+1000*60*60*24*7,// cookie will expire in seven days here time is in millisecond here
+        maxAge : 1000*60*60*24*7,
+        httpOnly : true // to avoid cross scripting attack we are using it 
+    }
+}
+app.use(session(sessionOptions));
+app.use(flash());
+app.use((req,res,next)=>{
+    res.locals.successMsg = req.flash("success");
+    next();
+})
+
 
 // data base connection
 async function main(){
@@ -41,7 +60,7 @@ app.listen(8080,()=>{
 // creating Routs
 app.get("/",(req,res)=>{
     console.log("Hi Raunak");
-    res.send("The project started");
+    res.redirect("/listings");
 })
 
 
