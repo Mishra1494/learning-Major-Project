@@ -12,9 +12,14 @@ const asyncWrap = require("./utils/wrapAsync.js");
 const expressError = require("./utils/expressError.js");
 // const Joi = require('joi'); // for schema validation
 const {listingSchema} = require("./schema.js");
-const listings = require("./routes/listing.js");
+const listingsRouters = require("./routes/listing.js");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const localStratgey  =  require("passport-local");
+const User = require("./models/userModels.js");
+const userRouter = require("./routes/User.js");
+
 
 // set and use  functions
 app.set("view engine","ejs");
@@ -35,11 +40,28 @@ const sessionOptions = {
 }
 app.use(session(sessionOptions));
 app.use(flash());
+//passport uses the session here so we are writing the passport below the  session middlewaere
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStratgey(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 app.use((req,res,next)=>{
     res.locals.successMsg = req.flash("success");
     next();
 })
 
+
+app.get("/register",async(req,res)=>{
+    let fakeUser = new User({
+        email:"mishra117@gmail.com",
+        username:"Raunak123",
+    })
+    const newUser = await User.register(fakeUser,"1234");
+    res.send(newUser);
+})
+app.use("/listings",listingsRouters);
+app.use("/",userRouter);
 
 // data base connection
 async function main(){
@@ -64,7 +86,7 @@ app.get("/",(req,res)=>{
 })
 
 
-app.use("/listings",listings);
+
 
 // app.get("/testListing",async (req,res)=>{
 //     let sample = new listing({
