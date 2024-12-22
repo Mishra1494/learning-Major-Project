@@ -1,19 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const asyncWrap = require("../utils/wrapAsync.js");
-const {listingSchema} = require("../schema.js");
-const expressError = require("../utils/expressError.js");
 const listing = require("../models/listing.js");
+const {isLoggedIn,validateListing,isOwner} = require("../middleWare.js");
 
-const validateListing = (req,res,next)=>{
-    let result = listingSchema.validate(req.body);
-    console.log(result);
-    if(result.error){
-        throw new expressError(400,result.error);
-    }else{
-        next();
-    }
-}
+
 
 //index.js
 router.get("/",asyncWrap(async (req,res,next)=>{
@@ -24,7 +15,8 @@ router.get("/",asyncWrap(async (req,res,next)=>{
 );
 
 //new route
-router.get("/new",(req,res)=>{
+router.get("/new",isLoggedIn,(req,res)=>{
+        console.log(req.user);
         res.render("listings/new.ejs");
 });
 
@@ -32,9 +24,10 @@ router.get("/new",(req,res)=>{
 
 // show routs
 router.get("/:id",asyncWrap(async(req,res,next)=>{
-
     let {id}= req.params;
-    let data =  await listing.findById(id);
+    let data = await listing.findById(id).populate("owner");
+    
+    console.log(data);
     res.render("listings/show.ejs",{data});
 }))
 
@@ -45,6 +38,7 @@ router.get("/:id",asyncWrap(async(req,res,next)=>{
 router.post("/",validateListing,asyncWrap(async(req,res,next)=>{
 
     const newlisting = new listing(req.body.listings);
+    newlisting.owner = req.user._id;
     await newlisting.save();
     req.flash("success","new listing created!");
     res.redirect("/listings");
@@ -52,16 +46,15 @@ router.post("/",validateListing,asyncWrap(async(req,res,next)=>{
 
 
 // update route
-router.get("/:id/Edit",asyncWrap(async(req,res)=>{
+router.get("/:id/Edit",isLoggedIn,isOwner,asyncWrap(async(req,res)=>{
     let {id} = req.params;
     const data = await listing.findById(id);
     res.render("listings/edit.ejs",{data});
 }))
 
 
-router.put("/:id",validateListing,asyncWrap(async(req,res)=>{
+router.put("/:id",isLoggedIn,isOwner,validateListing,asyncWrap(async(req,res)=>{
     let {id} = req.params;
-    
     await listing.findByIdAndUpdate(id,{...req.body.listings});
     req.flash("success","listing updated!");
     res.redirect(`/listings/${id}`);
@@ -70,8 +63,9 @@ router.put("/:id",validateListing,asyncWrap(async(req,res)=>{
 
 
 // Delete Route
-router.patch("/:id/Delete",asyncWrap(async(req,res)=>{
+router.patch("/:id/Delete",isLoggedIn,isOwner,asyncWrap(async(req,res)=>{
     let {id} = req.params;
+ 
     await listing.findByIdAndDelete(id);
     req.flash("success","listing deleted!");
     res.redirect("/listings");
