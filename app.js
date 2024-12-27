@@ -4,6 +4,7 @@ const app = express();
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 const listing = require("./models/listing.js");
+const Review  = require("./models/review.js");  
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
@@ -11,7 +12,7 @@ const wrapAsync = require("./utils/wrapAsync.js");
 const asyncWrap = require("./utils/wrapAsync.js");
 const expressError = require("./utils/expressError.js");
 // const Joi = require('joi'); // for schema validation
-const {listingSchema} = require("./schema.js");
+const {listingSchema , reviewSchema} = require("./schema.js");
 const listingsRouters = require("./routes/listing.js");
 const session = require("express-session");
 const flash = require("connect-flash");
@@ -72,8 +73,8 @@ async function main(){
 
 main().then(()=>{
     console.log("Connected Succesfully");
-}).catch(()=>{
-    console.log("Some err occured");
+}).catch((err)=>{
+    console.log(err);
 });
 
 //server setup
@@ -105,6 +106,29 @@ app.get("/",(req,res)=>{
 
 //     }
 // )
+
+const validateReview = (req,res,next)=>{
+    let result = reviewSchema.validate(req.body);
+    console.log(result);
+    if(result.error){
+        throw new expressError(404,result.error);
+    }else{
+        next();
+    }
+};
+
+
+
+app.post("/listings/:id/reviews",validateReview,wrapAsync(async(req,res)=>{
+    let id = req.params.id;
+    let listings = await listing.findById(id);
+    let newReview = new Review(req.body.review);
+    listings.reviews.push(newReview);
+    await newReview.save();
+    await listings.save();
+    console.log("new review saved");
+    res.redirect(`/listings/${listings._id}`);
+}))
 
 app.all("*",(req,res,next)=>{
     next(new expressError(404," page  not found"));
