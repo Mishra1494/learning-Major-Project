@@ -25,7 +25,7 @@ router.get("/new",isLoggedIn,(req,res)=>{
 // show routs
 router.get("/:id",asyncWrap(async(req,res,next)=>{
     let {id}= req.params;
-    let data = await listing.findById(id).populate("owner");
+    let data = await listing.findById(id).populate("owner").populate("reviews");
     
     console.log(data);
     res.render("listings/show.ejs",{data});

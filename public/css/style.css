@@ -52,8 +52,10 @@ body{
 
 
 /* card styling */
-
 .card{
+    margin-bottom : 2rem;
+}
+.listing-card{
     border: none;
     margin-bottom: 2rem;
 }

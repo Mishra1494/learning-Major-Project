@@ -4,7 +4,7 @@
         <div class="col-8 offset-3">
         <h1><%= data.title %></h1>
         </div>
-    <div class="card col-6 offset-3" >
+    <div class="card listing-card col-6 offset-3" >
         <img src="<%= data.image %>" class="card-img-top show-img add-btn" alt="Card-image">
         <div class="card-body">
           <h5 class="card-title"></h5>
@@ -35,7 +35,7 @@
         <% } %>
         </div>
       </div>
-   <div class="card col-6 offset-3 mb-3" >
+   <div class="card listing-card col-6 offset-3 mb-3" >
     <br>
      <h3>Leave a review</h3>
      <form action="/listings/<%=data._id%>/reviews" method="POST" novalidate class="needs-validation">
@@ -45,7 +45,7 @@
        </div>
        <div  class="mb-3 mt-3">
          <label for="comment" class="form-label">Comment</label>
-         <textarea 
+         <input 
             name="review[comment]" 
             id="comment" 
             col="20" 
@@ -53,11 +53,28 @@
             class="form-control" 
             placeholder="Enter the review"
             required>
-        </textarea>
+        
         <div class="invalid-feedback">Please Enter some text for review</div>
        </div>
        <button class="btn btn-outline-dark">Submit</button>
      </form>
+     <hr/>
+     <p><b>All Review</b></p>
+     <hr>
+     <div class="row">
+     <% for(review of data.reviews){ %>
+      <div class="card col-5 ms-3">
+        <div class="card-body">
+          <h5 class="card-title">John Doe</h5>
+          <p class="card-text"><%=review.comment %></p>
+          <p class="card-text"><%=review.rating%> stars</p>
+        </div>
+        <form  action="/listing/<%=data._id%>/reviews/<%=review._id%>/Delete?_method=PATCH" method="POST" class="mb-3 mt-3">
+          <button type="button" class = "btn-sm btn btn-dark">Delete</button>
+        </form>
+      </div>
+     <% } %>
+    </div>
    </div>
 </div>
 
