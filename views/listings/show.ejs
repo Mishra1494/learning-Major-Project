@@ -5,11 +5,15 @@
         <h1><%= data.title %></h1>
         </div>
     <div class="card listing-card col-6 offset-3" >
-        <img src="<%= data.image %>" class="card-img-top show-img add-btn" alt="Card-image">
+        <img src="<%= data.image.url %>" class="card-img-top show-img add-btn" alt="Card-image">
         <div class="card-body">
           <h5 class="card-title"></h5>
           <p class="card-text">
+            <% if(data.owner == null){%>
+              owned by <b>Raunak Mishra</b> 
+            <%}else{%>
             owned by <b><%= data.owner.username %></b><br>
+            <%}%>
           </p>
           <p class="card-text">
             <b><%= data.title %></b><br>
