@@ -1,6 +1,0 @@
- how we can add image to our model 
-
- 1> form is capable of sending file
- 2>Use third party services to store the file
- 3>save this link to our model here 
- to send the file from our form we will add encType = "multipart/form-data" to the new.ejs to 
