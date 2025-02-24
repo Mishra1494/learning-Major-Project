@@ -15,6 +15,7 @@ const expressError = require("./utils/expressError.js");
 // const Joi = require('joi'); // for schema validation
 const listingsRouters = require("./routes/listing.js");
 const session = require("express-session");
+const mongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const localStratgey  =  require("passport-local");
@@ -29,8 +30,24 @@ app.use(express.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
+
+
+
+const Store = mongoStore.create({
+    mongoUrl:process.env.ATLASLINK,
+    crypto: {
+        secret: process.env.SECRET
+      },
+    touchAfter : 24 * 3600 ,
+
+})
+
+Store.on("error",()=>{
+    console.log("error in mongo session store");
+});
 const sessionOptions = {
-    secret:"my secret key",
+    Store,
+    secret : process.env.SECRET,
     resave:false,
     saveUninitialized:true,
     cookie:{
@@ -39,6 +56,8 @@ const sessionOptions = {
         httpOnly : true // to avoid cross scripting attack we are using it 
     }
 }
+
+
 app.use(session(sessionOptions));
 app.use(flash());
 //passport uses the session here so we are writing the passport below the  session middlewaere
@@ -68,7 +87,7 @@ app.use("/",userRouter);
 app.use("/review",reviewRouters);
 // data base connection
 async function main(){
-    await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
+    await mongoose.connect(process.env.ATLASLINK);
 }
 
 main().then(()=>{
